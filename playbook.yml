@@ -1,0 +1,38 @@
+---
+- hosts: webservers
+  sudo :yes
+
+  vars:  
+    app_name: PleaseDeployMe
+    repo_url: https://github.com/apache/tomcat
+    repo_remote: origin
+    repo_version: master
+    webapps_dir: /deployed
+    virtualenv_root: /deployed/PleaseDeployMe/mac
+  tasks:
+ 
+    - name: git pull project
+      git: repo=({repo_url)} dest={{webapps_dir)}/{{app_name}} version=master
+      
+      notify:
+        - restart app
+    - name: install things
+      pip: name=virtualenv
+   
+    - name: activate virtalenv
+      command: virtualenv /deployed/PleaseDeployMe/venv
+    
+    - name: activate virtualenv
+      command: /bin/bash /deployed/PleaseDeployMe/venv/bin/activate
+    
+    - pip: requirements=/deployed/{{tomcat}}/requirements.txt virtualenv=/deployed/{{tomcat}}/mac
+
+    - name: run supervisord
+      command: "supervisord -c /deployed/PleaseDeployMe/supervisord.conf"
+    - name: begin tomcat app
+      supervisorctl: name=tomact state started
+
+  handlers:
+    - name: restart app
+      supervisorctl: name={{tomcat}} state=restarted
+    
