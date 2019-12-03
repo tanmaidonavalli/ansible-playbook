@@ -2,7 +2,7 @@
 
 
  
-  inputs:
+  
     SourceFolder: '/etc/ansible/recurcopy'
     Contents: '**/*yml'
     TargetFolder: '/etc'
