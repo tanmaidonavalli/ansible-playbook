@@ -6,4 +6,8 @@
    tasks:
     - copy:
         src: /etc/ansible/recurcopy
-        dest: /etc
+        dest: - task: CopyFiles@2
+  inputs:
+    SourceFolder: '/etc/ansible/recurcopy'
+    Contents: '**/*yml'
+    TargetFolder: '/etc'
